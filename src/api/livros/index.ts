@@ -13,8 +13,8 @@ class LivrosApi extends Api {
     return (await this.axios.get<Livros[]>("/livros")).data;
   }
 
-  async getBook(params: any): Promise<Livros[]> {
-    return (await this.axios.get<Livros[]>("/livros", { params })).data;
+  async getBook(params: string): Promise<Livros[]> {
+    return (await this.axios.get<Livros[]>(`/livros/${params}`)).data;
   }
 }
 
