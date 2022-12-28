@@ -7,6 +7,7 @@ import {
 import HomeView from "@/views/HomeView.vue";
 import BookView from "@/views/BookView.vue";
 import AutorView from "@/views/AuthorView.vue";
+import NotFound from "@/views/notfound/NotFound.vue";
 
 export const routesNamed = {
   home: "home",
@@ -29,6 +30,10 @@ const routes: RouteRecordRaw[] = [
     path: "/autores",
     name: routesNamed.autores,
     component: AutorView,
+  },
+  {
+    path: "/not-found",
+    component: NotFound,
   },
   {
     path: "/:catchAll(.*)",
