@@ -1,9 +1,14 @@
 import Api from "@/common/api";
 
+export interface Autor {
+  _id: string;
+  nome: string;
+  nacionalidade: string;
+}
 export interface Livros {
   _id: string;
   titulo: string;
-  autor: string;
+  autor: Autor;
   editora: string;
   numeroPaginas: number;
 }
