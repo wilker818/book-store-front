@@ -7,9 +7,11 @@
     @onclose="modalClose"
   >
     <template v-slot:body>
-      <ModalPutBook />
+      <ModalPutBook v-if="openModalPutBook" />
+      <ModalPostBook v-else />
     </template>
   </BsModal>
+
   <div class="bs-content container d-flex flex-column mb-5">
     <div>Livraria BOOKSTORE</div>
     <div>
@@ -44,7 +46,10 @@
                 VER LIVRO
               </RouterLink>
 
-              <button class="btn btn-warning" @click="modalOpened = true">
+              <button
+                class="btn btn-warning"
+                @click="(modalOpened = true), (openModalPutBook = true)"
+              >
                 ALTERAR LIVRO
               </button>
             </div>
@@ -53,7 +58,13 @@
       </div>
     </div>
     <div>
-      <button type="button" class="btn btn-success">Adicionar Livro</button>
+      <button
+        type="button"
+        class="btn btn-success"
+        @click="(modalOpened = true), (openModalPutBook = false)"
+      >
+        Adicionar Livro
+      </button>
     </div>
   </div>
 </template>
@@ -65,9 +76,11 @@ import BsModal from "@/components/BsModal.vue";
 import ModalPutBook from "./components/ModalPutBook.vue";
 
 import LivrosApi, { type Livros } from "@/api/livros";
+import ModalPostBook from "./components/ModalPostBook.vue";
 
 const livros: Ref<Livros[]> = ref([]);
 const modalOpened = ref(false);
+const openModalPutBook = ref(false);
 
 const livrosApi: LivrosApi = new LivrosApi();
 
