@@ -1,7 +1,7 @@
 <template>
   <div class="bs-content container mb-5">
     <BsModal
-      id="warriorDetail"
+      id="ModalPutAuthor"
       size="modal-lg"
       :opened="modalOpened"
       :showFooter="false"
@@ -47,9 +47,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted, type Ref } from "vue";
-import BsModal from "@/components/BsModal.vue";
 
 import AutoresApi, { type Autor } from "@/api/autores";
+
+import BsModal from "@/components/BsModal.vue";
 import ModalPutAuthor from "./components/ModalPutAuthor.vue";
 
 const autores: Ref<Autor[]> = ref([]);
