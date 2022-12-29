@@ -1,5 +1,17 @@
 <template>
   <div class="bs-content container mb-5">
+    <BsModal
+      id="warriorDetail"
+      size="modal-lg"
+      :opened="modalOpened"
+      :showFooter="false"
+      @onclose="modalClose"
+    >
+      <template v-slot:body>
+        <ModalPutAuthor />
+      </template>
+    </BsModal>
+
     <div>AUTORES</div>
     <div>
       <div class="row">
@@ -26,34 +38,34 @@
       </div>
     </div>
     <div>
-      <button class="btn btn-success">Adicionar Autor</button>
+      <button class="btn btn-success" @click="modalOpened = true">
+        Adicionar Autor
+      </button>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted, type Ref } from "vue";
+<script setup lang="ts">
+import { ref, onMounted, type Ref } from "vue";
+import BsModal from "@/components/BsModal.vue";
 
 import AutoresApi, { type Autor } from "@/api/autores";
-export default defineComponent({
-  name: "bs-home-view",
+import ModalPutAuthor from "./components/ModalPutAuthor.vue";
 
-  setup() {
-    const autores: Ref<Autor[]> = ref([]);
+const autores: Ref<Autor[]> = ref([]);
+const modalOpened = ref(false);
 
-    const livrosApi: AutoresApi = new AutoresApi();
+const livrosApi: AutoresApi = new AutoresApi();
 
-    const fetchLivros = async () => {
-      autores.value = await livrosApi.get();
-    };
+const fetchLivros = async () => {
+  autores.value = await livrosApi.get();
+};
 
-    onMounted(fetchLivros);
+onMounted(fetchLivros);
 
-    return {
-      autores,
-    };
-  },
-});
+function modalClose() {
+  modalOpened.value = false;
+}
 </script>
 
 <style scoped>
