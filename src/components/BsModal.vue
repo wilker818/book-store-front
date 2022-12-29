@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, watch } from "vue";
-import Modal from "bootstrap";
+import { Modal } from "bootstrap";
 
 const props = defineProps({
   id: {
@@ -57,16 +57,19 @@ const props = defineProps({
 });
 const emit = defineEmits(["onclose"]);
 
-const modal = new Modal();
+let modal: any
 
 onMounted(() => {
-  /* const config = {"{}"};
+  const config = {
+    backdrop: "",
+    keyboard: false,
+  };
   if (!props.canClose) {
     config.backdrop = "static";
     config.keyboard = false;
-  } */
+  }
   const modalEl = document.getElementById(props.id) as HTMLElement;
-  modal(modalEl);
+  modal = new Modal(modalEl);
 
   modalEl.addEventListener("hidden.bs.modal", () => {
     emit("onclose");
