@@ -12,6 +12,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.6",
     "axios": "^1.2.1",
     "bootstrap": "^5.2.3",
     "vue": "^3.2.45",
@@ -20,6 +21,7 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/axios": "^0.14.0",
+    "@types/bootstrap": "^5.2.6",
     "@types/jsdom": "^20.0.1",
     "@types/node": "^18.11.12",
     "@vitejs/plugin-vue": "^4.0.0",
