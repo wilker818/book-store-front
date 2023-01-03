@@ -15,11 +15,19 @@ export interface Livros {
 
 class LivrosApi extends Api {
   async getBooks(): Promise<Livros[]> {
-    return (await this.axios.get<Livros[]>("/livros")).data;
+    return (await this.axios.get<Livros[]>(`/livros`)).data;
   }
 
   async getBook(params: string): Promise<Livros[]> {
     return (await this.axios.get<Livros[]>(`/livros/${params}`)).data;
+  }
+
+  async putBook(params: string, titulo?: string, editora?: string, numeroPaginas?: number): Promise<Livros[]> {
+    return (await this.axios.put<Livros[]>(`/livros/${params}`, {titulo: titulo , editora: editora, numeroPaginas: numeroPaginas})).data;
+  }
+
+  async postBook(): Promise<Livros[]> {
+    return (await this.axios.post<Livros[]>(`/livros`)).data;
   }
 }
 
