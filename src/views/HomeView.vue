@@ -7,14 +7,54 @@
     @onclose="modalClose"
   >
     <template v-slot:body>
-      <ModalPutBook v-if="openModalPutBook" />
+      <div v-if="openModalPutBook">
+        <div class="row cw-modal-information">
+          <div class="mb-5">
+            <div class="d-flex flex-column mb-4">
+              <label for="bookName" class="mb-1">Nome do livro</label>
+              <input
+                type="bookName"
+                placeholder="Alterar Nome do Livro"
+                v-model="titulo"
+              />
+            </div>
+            <div class="d-flex flex-column mb-4">
+              <label for="nacionality" class="mb-1">Editora</label>
+              <input
+                type="nacionality"
+                placeholder="Alterar Editora"
+                v-model="editora"
+              />
+            </div>
+            <div class="d-flex flex-column">
+              <label for="page" class="mb-1">Páginas</label>
+              <input
+                type="page"
+                placeholder="Alterar quantidade de Páginas"
+                v-model="numeroPaginas"
+              />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success" @click="updateBook()">
+            <div
+              class="spinner-border spinner-border-sm text-light"
+              role="status"
+              v-if="loadingButton === true"
+            >
+              <span class="sr-only"></span>
+            </div>
+            <span v-else>Alterar</span>
+          </button>
+        </div>
+      </div>
+
       <ModalPostBook v-else />
     </template>
   </BsModal>
 
   <div class="bs-content container d-flex flex-column mb-5">
     <!-- <div>Livraria BOOKSTORE</div> -->
-    <div class="my-5">
+    <div class="mt-5 mb-2">
       <div class="row" v-if="loading === true">
         <LazyloadItem v-for="item in 6" :key="item" />
       </div>
@@ -49,10 +89,7 @@
                 VER LIVRO
               </RouterLink>
 
-              <button
-                class="btn btn-warning"
-                @click="(modalOpened = true), (openModalPutBook = true)"
-              >
+              <button class="btn btn-warning" @click="openModalBook(livro._id)">
                 ALTERAR LIVRO
               </button>
             </div>
@@ -63,7 +100,7 @@
     <div>
       <button
         type="button"
-        class="btn btn-success"
+        class="btn btn-success mb-4"
         @click="(modalOpened = true), (openModalPutBook = false)"
       >
         Adicionar Livro
@@ -76,19 +113,31 @@
 import { ref, onMounted, type Ref } from "vue";
 
 import BsModal from "@/components/BsModal.vue";
-import ModalPutBook from "./components/ModalPutBook.vue";
 
 import LivrosApi, { type Livros } from "@/api/livros";
 import ModalPostBook from "./components/ModalPostBook.vue";
 import LazyloadItem from "./components/LazyloadItem.vue";
 
+const livrosApi: LivrosApi = new LivrosApi();
 const livros: Ref<Livros[]> = ref([]);
+const putLivros: Ref<Livros[]> = ref([]);
+
+const getIdBook: Ref<string> = ref("");
+
+const titulo: Ref<string> = ref("");
+const editora: Ref<string> = ref("");
+const numeroPaginas: Ref<number> = ref(0);
+const rules = {
+  titulo: titulo,
+  editora: editora,
+  numeroPaginas: numeroPaginas,
+};
 
 const loading: Ref<boolean> = ref(false);
+const loadingButton: Ref<boolean> = ref(false);
+
 const modalOpened: Ref<boolean> = ref(false);
 const openModalPutBook: Ref<boolean> = ref(false);
-
-const livrosApi: LivrosApi = new LivrosApi();
 
 const fetchLivros = async () => {
   loading.value = true;
@@ -97,6 +146,36 @@ const fetchLivros = async () => {
 };
 
 onMounted(fetchLivros);
+
+async function openModalBook(id: string) {
+  openModalPutBook.value = true;
+  modalOpened.value = true;
+
+  const consultBook: Livros[] = await livrosApi.getBook(id);
+
+  titulo.value = consultBook.titulo;
+  editora.value = consultBook.editora;
+  numeroPaginas.value = consultBook.numeroPaginas;
+
+  getIdBook.value = id;
+}
+
+async function updateBook() {
+  try {
+    loadingButton.value = true;
+    putLivros.value = await livrosApi.putBook(
+      getIdBook.value,
+      rules.titulo.value,
+      rules.editora.value,
+      rules.numeroPaginas.value
+    );
+    modalOpened.value = false;
+    loadingButton.value = false;
+    fetchLivros();
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 function modalClose() {
   modalOpened.value = false;
