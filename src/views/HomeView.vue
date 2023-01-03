@@ -13,9 +13,12 @@
   </BsModal>
 
   <div class="bs-content container d-flex flex-column mb-5">
-    <div>Livraria BOOKSTORE</div>
-    <div>
-      <div class="row">
+    <!-- <div>Livraria BOOKSTORE</div> -->
+    <div class="my-5">
+      <div class="row" v-if="loading === true">
+        <LazyloadItem v-for="item in 6" :key="item" />
+      </div>
+      <div class="row" v-else>
         <div class="col-md-4 mb-4" v-for="livro in livros" :key="livro._id">
           <div class="card w-100" style="width: 18rem">
             <img
@@ -77,15 +80,20 @@ import ModalPutBook from "./components/ModalPutBook.vue";
 
 import LivrosApi, { type Livros } from "@/api/livros";
 import ModalPostBook from "./components/ModalPostBook.vue";
+import LazyloadItem from "./components/LazyloadItem.vue";
 
 const livros: Ref<Livros[]> = ref([]);
-const modalOpened = ref(false);
-const openModalPutBook = ref(false);
+
+const loading: Ref<boolean> = ref(false);
+const modalOpened: Ref<boolean> = ref(false);
+const openModalPutBook: Ref<boolean> = ref(false);
 
 const livrosApi: LivrosApi = new LivrosApi();
 
 const fetchLivros = async () => {
+  loading.value = true;
   livros.value = await livrosApi.getBooks();
+  loading.value = false;
 };
 
 onMounted(fetchLivros);
