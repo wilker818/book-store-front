@@ -1,6 +1,6 @@
 <template>
   <BsModal
-    id="ModalPutBook"
+    id="ModalBook"
     size="modal-lg"
     :opened="modalOpened"
     :showFooter="false"
@@ -8,7 +8,17 @@
   >
     <template v-slot:body>
       <div v-if="openModalPutBook">
-        <div class="row cw-modal-information">
+        <div
+          class="d-flex align-items-center justify-content-center"
+          v-if="loadModal === true"
+        >
+          <img
+            src="@/assets/loading/three-dots-dark.svg"
+            class="w-25"
+            alt="Loading..."
+          />
+        </div>
+        <div v-else class="cw-modal-information">
           <div class="mb-5">
             <div class="d-flex flex-column mb-4">
               <label for="bookName" class="mb-1">Nome do livro</label>
@@ -134,6 +144,7 @@ const rules = {
 };
 
 const loading: Ref<boolean> = ref(false);
+const loadModal: Ref<boolean> = ref(false);
 const loadingButton: Ref<boolean> = ref(false);
 
 const modalOpened: Ref<boolean> = ref(false);
@@ -148,16 +159,18 @@ const fetchLivros = async () => {
 onMounted(fetchLivros);
 
 async function openModalBook(id: string) {
+  loadModal.value = true;
   openModalPutBook.value = true;
   modalOpened.value = true;
+  getIdBook.value = id;
 
-  const consultBook: Livros[] = await livrosApi.getBook(id);
+  const consultBook: Livros[] = await livrosApi.getBook(getIdBook.value);
 
   titulo.value = consultBook.titulo;
   editora.value = consultBook.editora;
   numeroPaginas.value = consultBook.numeroPaginas;
 
-  getIdBook.value = id;
+  loadModal.value = false;
 }
 
 async function updateBook() {
