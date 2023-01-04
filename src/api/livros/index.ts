@@ -26,8 +26,8 @@ class LivrosApi extends Api {
     return (await this.axios.put<Livros[]>(`/livros/${params}`, {titulo: titulo , editora: editora, numeroPaginas: numeroPaginas})).data;
   }
 
-  async postBook(): Promise<Livros[]> {
-    return (await this.axios.post<Livros[]>(`/livros`)).data;
+  async postBook(titulo?: string, editora?: string, autor?: string, numeroPaginas?: number): Promise<Livros[]> {
+    return (await this.axios.post<Livros[]>(`/livros`, {titulo: titulo , editora: editora, autor: autor, numeroPaginas: numeroPaginas})).data;
   }
 }
 
