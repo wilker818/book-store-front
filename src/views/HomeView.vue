@@ -58,7 +58,56 @@
         </div>
       </div>
 
-      <ModalPostBook v-else />
+      <div v-else>
+        <div class="row cw-modal-information">
+          <div class="mb-5">
+            <div class="d-flex flex-column mb-4">
+              <label for="bookName" class="mb-1">Nome do livro</label>
+              <input
+                type="bookName"
+                placeholder="Nome do Livro"
+                v-model="titulo"
+              />
+            </div>
+            <div class="d-flex flex-column mb-4">
+              <label for="author" class="mb-1">Autores</label>
+              <select
+                class="form-select"
+                aria-label="Selecione um Autor"
+                v-model="autorSelecionado"
+              >
+                <option selected>Selecione um autor</option>
+                <option
+                  :value="autor._id"
+                  v-for="autor in autores"
+                  :key="autor._id"
+                >
+                  {{ autor.nome }}
+                </option>
+              </select>
+            </div>
+            <div class="d-flex flex-column mb-4">
+              <label for="nacionality" class="mb-1">Editora</label>
+              <input
+                type="nacionality"
+                placeholder="Editora"
+                v-model="editora"
+              />
+            </div>
+            <div class="d-flex flex-column">
+              <label for="page" class="mb-1">Páginas</label>
+              <input
+                type="number"
+                placeholder="Quantidade de Páginas"
+                v-model="numeroPaginas"
+              />
+            </div>
+          </div>
+          <button type="button" class="btn btn-success" @click="addNewBook()">
+            Adicionar
+          </button>
+        </div>
+      </div>
     </template>
   </BsModal>
 
@@ -111,7 +160,7 @@
       <button
         type="button"
         class="btn btn-success mb-4"
-        @click="(modalOpened = true), (openModalPutBook = false)"
+        @click="openModalPostBook()"
       >
         Adicionar Livro
       </button>
@@ -125,18 +174,26 @@ import { ref, onMounted, type Ref } from "vue";
 import BsModal from "@/components/BsModal.vue";
 
 import LivrosApi, { type Livros } from "@/api/livros";
+import AutoresApi, { type Autor } from "@/api/autores";
+
 import ModalPostBook from "./components/ModalPostBook.vue";
 import LazyloadItem from "./components/LazyloadItem.vue";
 
 const livrosApi: LivrosApi = new LivrosApi();
+const autoresApi: AutoresApi = new AutoresApi();
+
 const livros: Ref<Livros[]> = ref([]);
+const autores: Ref<Autor[]> = ref([]);
 const putLivros: Ref<Livros[]> = ref([]);
+const consultBook: Ref<Livros[]> = ref([]);
 
 const getIdBook: Ref<string> = ref("");
 
 const titulo: Ref<string> = ref("");
 const editora: Ref<string> = ref("");
+const autorSelecionado: Ref<string> = ref("");
 const numeroPaginas: Ref<number> = ref(0);
+
 const rules = {
   titulo: titulo,
   editora: editora,
@@ -173,6 +230,13 @@ async function openModalBook(id: string) {
   loadModal.value = false;
 }
 
+async function openModalPostBook() {
+  openModalPutBook.value = false;
+  modalOpened.value = true;
+
+  autores.value = await autoresApi.get();
+}
+
 async function updateBook() {
   try {
     loadingButton.value = true;
@@ -185,6 +249,27 @@ async function updateBook() {
     modalOpened.value = false;
     loadingButton.value = false;
     fetchLivros();
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function addNewBook() {
+  try {
+    loadModal.value = true;
+    openModalPutBook.value = true;
+    modalOpened.value = true;
+
+    consultBook.value = await livrosApi.postBook(
+      rules.titulo.value,
+      rules.editora.value,
+      autorSelecionado.value,
+      rules.numeroPaginas.value
+    );
+
+    autores;
+    fetchLivros();
+    loadModal.value = false;
   } catch (err) {
     console.log(err);
   }
