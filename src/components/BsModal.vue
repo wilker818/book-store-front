@@ -13,7 +13,7 @@
             data-bs-dismiss="modal"
             @click="$emit('onclose')"
           >
-            <i class="bi bi-x-lg"> </i>
+            <i class="bi bi-x-lg">X</i>
           </button>
           <slot name="body" />
         </div>
@@ -57,7 +57,7 @@ const props = defineProps({
 });
 const emit = defineEmits(["onclose"]);
 
-let modal: any
+let modal: any;
 
 onMounted(() => {
   const config = {
