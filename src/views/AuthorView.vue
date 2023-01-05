@@ -1,14 +1,88 @@
 <template>
   <div class="bs-content container mb-5">
     <BsModal
-      id="ModalPutAuthor"
+      id="ModalAuthor"
       size="modal-lg"
       :opened="modalOpened"
       :showFooter="false"
       @onclose="modalClose"
     >
       <template v-slot:body>
-        <ModalPutAuthor />
+        <div v-if="modalPutAuthor">
+          <div
+            class="d-flex align-items-center justify-content-center"
+            v-if="loadingModalPutAuthor"
+          >
+            <img
+              src="@/assets/loading/three-dots-dark.svg"
+              class="w-25"
+              alt="Loading..."
+            />
+          </div>
+          <div v-else class="row cw-modal-information">
+            <div class="mb-5">
+              <div class="d-flex flex-column mb-4">
+                <label for="name" class="mb-1">Nome</label>
+                <input type="name" placeholder="Alterar Nome" v-model="nome" />
+              </div>
+              <div class="d-flex flex-column">
+                <label for="nacionality" class="mb-1">Nacionalidade</label>
+                <input
+                  type="nacionality"
+                  placeholder="Alterar Nacionalidade"
+                  v-model="nacionalidade"
+                />
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn btn-success"
+              @click="updateAuthor()"
+            >
+              <div
+                class="spinner-border spinner-border-sm text-light"
+                role="status"
+                v-if="loadingButton"
+              >
+                <span class="sr-only"></span>
+              </div>
+              <span v-else>Alterar</span>
+            </button>
+          </div>
+        </div>
+
+        <div v-else>
+          <div class="row cw-modal-information">
+            <div class="mb-5">
+              <div class="d-flex flex-column mb-4">
+                <label for="name" class="mb-1">Nome</label>
+                <input type="name" placeholder="Alterar Nome" v-model="nome" />
+              </div>
+              <div class="d-flex flex-column">
+                <label for="nacionality" class="mb-1">Nacionalidade</label>
+                <input
+                  type="nacionality"
+                  placeholder="Alterar Nacionalidade"
+                  v-model="nacionalidade"
+                />
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn btn-success"
+              @click="addNewAuthor()"
+            >
+              <div
+                class="spinner-border spinner-border-sm text-light"
+                role="status"
+                v-if="loadingButton"
+              >
+                <span class="sr-only"></span>
+              </div>
+              <span>Adicionar</span>
+            </button>
+          </div>
+        </div>
       </template>
     </BsModal>
 
@@ -31,14 +105,20 @@
               </li>
             </ul>
             <div class="card-body">
-              <a href="/" class="card-link">ALTERAR AUTOR</a>
+              <button
+                type="button"
+                class="btn btn-warning"
+                @click="openModalPutAuthor(autor._id)"
+              >
+                ALTERAR AUTOR
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
     <div>
-      <button class="btn btn-success" @click="modalOpened = true">
+      <button class="btn btn-success" @click="openModalPostAuthor()">
         Adicionar Autor
       </button>
     </div>
@@ -51,18 +131,107 @@ import { ref, onMounted, type Ref } from "vue";
 import AutoresApi, { type Autor } from "@/api/autores";
 
 import BsModal from "@/components/BsModal.vue";
-import ModalPutAuthor from "./components/ModalPutAuthor.vue";
+
+const autoresApi: AutoresApi = new AutoresApi();
 
 const autores: Ref<Autor[]> = ref([]);
-const modalOpened = ref(false);
+const putAutores: Ref<Autor[]> = ref([]);
+const consultAuthor: Ref<Autor[]> = ref([]);
 
-const livrosApi: AutoresApi = new AutoresApi();
+const getIdAuthor: Ref<string> = ref("");
 
-const fetchLivros = async () => {
-  autores.value = await livrosApi.get();
+const nome: Ref<string> = ref("");
+const nacionalidade: Ref<string> = ref("");
+
+const loading: Ref<boolean> = ref(false);
+const loadingModalPutAuthor: Ref<boolean> = ref(false);
+const loadingButton: Ref<boolean> = ref(false);
+
+const modalOpened: Ref<boolean> = ref(false);
+const modalPutAuthor: Ref<boolean> = ref(false);
+
+const rules = {
+  nome: nome,
+  nacionalidade: nacionalidade,
 };
 
-onMounted(fetchLivros);
+async function fetchAutores(): Promise<void> {
+  try {
+    loading.value = true;
+    autores.value = await autoresApi.get();
+    loading.value = false;
+  } catch (error) {
+    loading.value = false;
+    console.log(error);
+  }
+}
+
+onMounted(() => {
+  fetchAutores();
+});
+
+async function openModalPutAuthor(id: string): Promise<void> {
+  loadingModalPutAuthor.value = true;
+  modalPutAuthor.value = true;
+  modalOpened.value = true;
+  getIdAuthor.value = id;
+
+  const consultAuthor: Autor[] = await autoresApi.getAuthor(getIdAuthor.value);
+
+  nome.value = consultAuthor.nome;
+  nacionalidade.value = consultAuthor.nacionalidade;
+
+  loadingModalPutAuthor.value = false;
+}
+async function openModalPostAuthor(): Promise<void> {
+  modalPutAuthor.value = false;
+  modalOpened.value = true;
+
+  nome.value = "";
+  nacionalidade.value = "";
+
+  autores.value = await autoresApi.get();
+}
+
+async function updateAuthor(): Promise<void> {
+  try {
+    loadingButton.value = true;
+
+    putAutores.value = await autoresApi.putAuthor(
+      getIdAuthor.value,
+      rules.nome.value,
+      rules.nacionalidade.value
+    );
+
+    loadingButton.value = false;
+    modalOpened.value = false;
+
+    fetchAutores();
+  } catch (err) {
+    modalOpened.value = false;
+    modalPutAuthor.value = false;
+    console.log(err);
+  }
+}
+async function addNewAuthor(): Promise<void> {
+  try {
+    modalOpened.value = true;
+    loadingButton.value = true;
+
+    consultAuthor.value = await autoresApi.postAuthor(
+      rules.nome.value,
+      rules.nacionalidade.value
+    );
+
+    loadingButton.value = false;
+    modalOpened.value = false;
+
+    fetchAutores();
+  } catch (err) {
+    modalOpened.value = false;
+    console.log(err);
+  }
+}
 
 function modalClose() {
   modalOpened.value = false;
