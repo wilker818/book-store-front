@@ -1,10 +1,18 @@
 <template>
   <div class="bs-content container my-5">
     <div class="row position-relative">
-      <div class="col-md-6 colunaProdutoLemoon">
+      <div class="col-md-6">
         <img src="https://dummyimage.com/600x600/000/fff" alt="Image Book" />
       </div>
-      <div class="col-md-6 colunaProdutoLemoon">
+
+      <div
+        class="col-md-6 bs-loadingDescription"
+        v-if="loadingDescription === true"
+      >
+        <img src="@/assets/loading/three-dots-dark.svg" alt="Loading..." />
+      </div>
+
+      <div class="col-md-6" v-else>
         <div class="mb-4">Ref: {{ getLivro._id }}</div>
         <div class="bs-conteudo">
           <div>
@@ -88,10 +96,10 @@ import LivrosApi, { type Livros } from "@/api/livros";
 
 const route = useRoute();
 const getParamsId: string = route.params.id as string;
+const livrosApi: LivrosApi = new LivrosApi();
 
 const getLivro: Ref<Livros[]> = ref([]);
-
-const livrosApi: LivrosApi = new LivrosApi();
+const loadingDescription: Ref<boolean> = ref(false);
 
 onMounted(() => {
   fetchLivro();
@@ -99,8 +107,13 @@ onMounted(() => {
 
 async function fetchLivro(): Promise<void> {
   try {
+    loadingDescription.value = true;
+
     getLivro.value = await livrosApi.getBook(getParamsId);
+
+    loadingDescription.value = false;
   } catch (error) {
+    loadingDescription.value = false;
     console.log(error);
   }
 }
@@ -108,14 +121,14 @@ async function fetchLivro(): Promise<void> {
 
 <style scoped>
 .bs-content {
-  height: 100vh;
+  color: #000;
 }
-.colunaProdutoLemoon {
+.bs-loadingDescription {
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  border: 1px solid #000;
 }
 .bs-conteudo {
   width: 100%;
