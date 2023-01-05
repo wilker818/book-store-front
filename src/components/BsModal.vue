@@ -13,7 +13,7 @@
             data-bs-dismiss="modal"
             @click="$emit('onclose')"
           >
-            <i class="bi bi-x-lg">X</i>
+            <i class="bi bi-x-lg"></i>
           </button>
           <slot name="body" />
         </div>
