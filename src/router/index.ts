@@ -15,6 +15,10 @@ export const routesNamed = {
   autores: "autores",
 };
 
+const scrollBehavior = (to: any, from: any, savedPosition: any) => {
+  return savedPosition || { top: 0, left: 0 };
+};
+
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
@@ -44,6 +48,7 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior,
 });
 
 export default router;
