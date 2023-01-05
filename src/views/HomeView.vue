@@ -113,7 +113,11 @@
 
   <div class="bs-content container d-flex flex-column mb-5">
     <div>
-      <img src="@/assets/images/VAU-full-desk-22-12.png" alt="banner" class="img-fluid w-100">
+      <img
+        src="@/assets/images/VAU-full-desk-22-12.png"
+        alt="banner"
+        class="img-fluid w-100"
+      />
     </div>
     <div class="mt-5 mb-2">
       <div class="row" v-if="loading === true">
@@ -208,15 +212,22 @@ const loadingButton: Ref<boolean> = ref(false);
 const modalOpened: Ref<boolean> = ref(false);
 const openModalPutBook: Ref<boolean> = ref(false);
 
-const fetchLivros = async () => {
-  loading.value = true;
-  livros.value = await livrosApi.getBooks();
-  loading.value = false;
-};
+onMounted(() => {
+  fetchLivros();
+});
 
-onMounted(fetchLivros);
+async function fetchLivros(): Promise<void> {
+  try {
+    loading.value = true;
+    livros.value = await livrosApi.getBooks();
+    loading.value = false;
+  } catch (error) {
+    loading.value = false;
+    console.log(error);
+  }
+}
 
-async function openModalBook(id: string) {
+async function openModalBook(id: string): Promise<void> {
   loadModal.value = true;
   openModalPutBook.value = true;
   modalOpened.value = true;
@@ -230,14 +241,18 @@ async function openModalBook(id: string) {
 
   loadModal.value = false;
 }
-async function openModalPostBook() {
+async function openModalPostBook(): Promise<void> {
   openModalPutBook.value = false;
   modalOpened.value = true;
+  
+  titulo.value = "";
+  editora.value = "";
+  numeroPaginas.value = 0;
 
   autores.value = await autoresApi.get();
 }
 
-async function updateBook() {
+async function updateBook(): Promise<void> {
   try {
     loadingButton.value = true;
     putLivros.value = await livrosApi.putBook(
@@ -248,7 +263,7 @@ async function updateBook() {
     );
     modalOpened.value = false;
     loadingButton.value = false;
-    fetchLivros;
+    fetchLivros();
   } catch (err) {
     loadModal.value = false;
     modalOpened.value = false;
@@ -256,7 +271,7 @@ async function updateBook() {
   }
 }
 
-async function addNewBook() {
+async function addNewBook(): Promise<void> {
   try {
     loadModal.value = true;
 
@@ -270,7 +285,7 @@ async function addNewBook() {
       rules.numeroPaginas.value
     );
 
-    fetchLivros;
+    fetchLivros();
     loadModal.value = false;
   } catch (err) {
     loadModal.value = false;
