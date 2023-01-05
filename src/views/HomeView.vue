@@ -112,7 +112,9 @@
   </BsModal>
 
   <div class="bs-content container d-flex flex-column mb-5">
-    <!-- <div>Livraria BOOKSTORE</div> -->
+    <div>
+      <img src="@/assets/images/VAU-full-desk-22-12.png" alt="banner" class="img-fluid w-100">
+    </div>
     <div class="mt-5 mb-2">
       <div class="row" v-if="loading === true">
         <LazyloadItem v-for="item in 6" :key="item" />
@@ -176,7 +178,6 @@ import BsModal from "@/components/BsModal.vue";
 import LivrosApi, { type Livros } from "@/api/livros";
 import AutoresApi, { type Autor } from "@/api/autores";
 
-import ModalPostBook from "./components/ModalPostBook.vue";
 import LazyloadItem from "./components/LazyloadItem.vue";
 
 const livrosApi: LivrosApi = new LivrosApi();
@@ -229,7 +230,6 @@ async function openModalBook(id: string) {
 
   loadModal.value = false;
 }
-
 async function openModalPostBook() {
   openModalPutBook.value = false;
   modalOpened.value = true;
@@ -248,8 +248,10 @@ async function updateBook() {
     );
     modalOpened.value = false;
     loadingButton.value = false;
-    fetchLivros();
+    fetchLivros;
   } catch (err) {
+    loadModal.value = false;
+    modalOpened.value = false;
     console.log(err);
   }
 }
@@ -257,6 +259,7 @@ async function updateBook() {
 async function addNewBook() {
   try {
     loadModal.value = true;
+
     openModalPutBook.value = true;
     modalOpened.value = true;
 
@@ -267,10 +270,11 @@ async function addNewBook() {
       rules.numeroPaginas.value
     );
 
-    autores;
-    fetchLivros();
+    fetchLivros;
     loadModal.value = false;
   } catch (err) {
+    loadModal.value = false;
+    modalOpened.value = false;
     console.log(err);
   }
 }
