@@ -183,6 +183,7 @@ import LivrosApi, { type Livros } from "@/api/livros";
 import AutoresApi, { type Autor } from "@/api/autores";
 
 import LazyloadItem from "./components/LazyloadItem.vue";
+import BsFooter from "./components/BsFooter.vue";
 
 const livrosApi: LivrosApi = new LivrosApi();
 const autoresApi: AutoresApi = new AutoresApi();
@@ -244,7 +245,7 @@ async function openModalBook(id: string): Promise<void> {
 async function openModalPostBook(): Promise<void> {
   openModalPutBook.value = false;
   modalOpened.value = true;
-  
+
   titulo.value = "";
   editora.value = "";
   numeroPaginas.value = 0;
@@ -299,8 +300,4 @@ function modalClose() {
 }
 </script>
 
-<style scoped>
-.bs-content {
-  height: 100vh;
-}
-</style>
+<style scoped></style>
