@@ -16,12 +16,9 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
         <RouterLink to="/" class="navbar-brand" aria-current="page">
-          HOME
+          Book Store
         </RouterLink>
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <RouterLink to="/livros" class="nav-link">LIVROS</RouterLink>
-          </li>
           <li class="nav-item">
             <RouterLink to="/autores" class="nav-link">AUTORES</RouterLink>
           </li>
