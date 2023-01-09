@@ -135,8 +135,8 @@ import BsModal from "@/components/BsModal.vue";
 const authorsApi: AuthorsApi = new AuthorsApi();
 
 const authors: Ref<Author[]> = ref([]);
-const putAuthors: Ref<Author[]> = ref([]);
-const consultAuthor: Ref<Author[]> = ref([]);
+const putAuthors: Ref<Author | undefined> = ref();
+const consultAuthor: Ref<Author | undefined> = ref();
 
 const getIdAuthor: Ref<string> = ref("");
 
@@ -176,7 +176,7 @@ async function openModalPutAuthor(id: string): Promise<void> {
   modalOpened.value = true;
   getIdAuthor.value = id;
 
-  const consultAuthor: Author[] = await authorsApi.getAuthor(getIdAuthor.value);
+  const consultAuthor: Author = await authorsApi.getAuthor(getIdAuthor.value);
 
   nome.value = consultAuthor.nome;
   nacionalidade.value = consultAuthor.nacionalidade;

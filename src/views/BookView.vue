@@ -12,20 +12,20 @@
         <img src="@/assets/loading/three-dots-dark.svg" alt="Loading..." />
       </div>
 
-      <div class="col-md-6" v-else>
-        <div class="mb-4">Ref: {{ getLivro._id }}</div>
+      <div class="col-md-6" v-else-if="getBook">
+        <div class="mb-4">Ref: {{ getBook._id }}</div>
         <div class="bs-conteudo">
           <div>
-            <h2>{{ getLivro.titulo }}</h2>
+            <h2>{{ getBook.titulo }}</h2>
 
             <div class="mt-4 mb-3">
               <strong>Editora:</strong>
-              <span>{{ getLivro.editora }}</span>
+              <span>{{ getBook.editora }}</span>
             </div>
 
             <div class="mb-3">
               <strong>Total de Páginas:</strong>
-              <span>{{ getLivro.numeroPaginas }}</span>
+              <span>{{ getBook.numeroPaginas }}</span>
             </div>
 
             <div>
@@ -92,13 +92,13 @@
 import { ref, onMounted, type Ref } from "vue";
 import { useRoute } from "vue-router";
 
-import BooksApi, { type Books } from "@/api/books";
+import BooksApi, { type Book } from "@/api/books";
 
 const route = useRoute();
 const getParamsId: string = route.params.id as string;
 const booksApi: BooksApi = new BooksApi();
 
-const getBook: Ref<Books[]> = ref([]);
+const getBook: Ref<Book | undefined> = ref();
 const loadingDescription: Ref<boolean> = ref(false);
 
 onMounted(() => {

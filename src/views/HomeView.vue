@@ -186,7 +186,7 @@ import { ref, onMounted, type Ref } from "vue";
 
 import BsModal from "@/components/BsModal.vue";
 
-import BooksApi, { type Books } from "@/api/books";
+import BooksApi, { type Book } from "@/api/books";
 import AuthorsApi, { type Author } from "@/api/authors";
 
 import LazyloadItem from "./components/LazyloadItem.vue";
@@ -194,10 +194,10 @@ import LazyloadItem from "./components/LazyloadItem.vue";
 const booksApi: BooksApi = new BooksApi();
 const authorsApi: AuthorsApi = new AuthorsApi();
 
-const books: Ref<Books[]> = ref([]);
+const books: Ref<Book[]> = ref([]);
 const authors: Ref<Author[]> = ref([]);
-const putBooks: Ref<Books[]> = ref([]);
-const consultBook: Ref<Books[]> = ref([]);
+const putBooks: Ref<Book | undefined> = ref();
+const consultBook: Ref<Book | undefined> = ref();
 
 const getIdBook: Ref<string> = ref("");
 
@@ -240,7 +240,7 @@ async function openModalBook(id: string): Promise<void> {
   modalOpened.value = true;
   getIdBook.value = id;
 
-  const consultBook: Books[] = await booksApi.getBook(getIdBook.value);
+  const consultBook: Book = await booksApi.getBook(getIdBook.value);
 
   titulo.value = consultBook.titulo;
   editora.value = consultBook.editora;
