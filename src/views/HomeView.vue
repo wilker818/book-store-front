@@ -41,7 +41,7 @@
               <input
                 type="page"
                 placeholder="Alterar quantidade de Páginas"
-                v-model="pagesNumber"
+                v-model="numeroPaginas"
               />
             </div>
           </div>
@@ -99,7 +99,7 @@
               <input
                 type="number"
                 placeholder="Quantidade de Páginas"
-                v-model="pagesNumber"
+                v-model="numeroPaginas"
               />
             </div>
           </div>
@@ -150,7 +150,7 @@
               </li>
               <li class="list-group-item">Editora: {{ book.editora }}</li>
               <li class="list-group-item">
-                Número de páginas: {{ book.pagesNumber }}
+                Número de páginas: {{ book.numeroPaginas }}
               </li>
             </ul>
             <div class="card-body d-flex justify-content-between">
@@ -204,12 +204,12 @@ const getIdBook: Ref<string> = ref("");
 const titulo: Ref<string> = ref("");
 const editora: Ref<string> = ref("");
 const selectedAuthor: Ref<string> = ref("");
-const pagesNumber: Ref<number> = ref(0);
+const numeroPaginas: Ref<number> = ref(0);
 
 const rules = {
   titulo: titulo,
   editora: editora,
-  pagesNumber: pagesNumber,
+  numeroPaginas: numeroPaginas,
 };
 
 const loading: Ref<boolean> = ref(false);
@@ -244,7 +244,7 @@ async function openModalBook(id: string): Promise<void> {
 
   titulo.value = consultBook.titulo;
   editora.value = consultBook.editora;
-  pagesNumber.value = consultBook.pagesNumber;
+  numeroPaginas.value = consultBook.numeroPaginas;
 
   loadModal.value = false;
 }
@@ -254,7 +254,7 @@ async function openModalPostBook(): Promise<void> {
 
   titulo.value = "";
   editora.value = "";
-  pagesNumber.value = 0;
+  numeroPaginas.value = 0;
 
   authors.value = await authorsApi.get();
 }
@@ -266,7 +266,7 @@ async function updateBook(): Promise<void> {
       getIdBook.value,
       rules.titulo.value,
       rules.editora.value,
-      rules.pagesNumber.value
+      rules.numeroPaginas.value
     );
     modalOpened.value = false;
     loadingButton.value = false;
@@ -289,7 +289,7 @@ async function addNewBook(): Promise<void> {
       rules.titulo.value,
       rules.editora.value,
       selectedAuthor.value,
-      rules.pagesNumber.value
+      rules.numeroPaginas.value
     );
 
     fetchBooks();
