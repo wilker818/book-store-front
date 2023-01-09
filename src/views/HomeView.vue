@@ -104,7 +104,14 @@
             </div>
           </div>
           <button type="button" class="btn btn-success" @click="addNewBook()">
-            Adicionar
+            <div
+              class="spinner-border spinner-border-sm text-light"
+              role="status"
+              v-if="loadingButton === true"
+            >
+              <span class="sr-only"></span>
+            </div>
+            <span> Adicionar </span>
           </button>
         </div>
       </div>
@@ -114,7 +121,7 @@
   <div class="bs-content container d-flex flex-column mb-5">
     <div>
       <img
-        src="@/assets/images/VAU-full-desk-22-12.png"
+        src="@/assets/images/banner.png"
         alt="banner"
         class="img-fluid w-100"
       />
@@ -183,7 +190,6 @@ import LivrosApi, { type Livros } from "@/api/livros";
 import AutoresApi, { type Autor } from "@/api/autores";
 
 import LazyloadItem from "./components/LazyloadItem.vue";
-import BsFooter from "./components/BsFooter.vue";
 
 const livrosApi: LivrosApi = new LivrosApi();
 const autoresApi: AutoresApi = new AutoresApi();
@@ -274,7 +280,7 @@ async function updateBook(): Promise<void> {
 
 async function addNewBook(): Promise<void> {
   try {
-    loadModal.value = true;
+    loadingButton.value = true;
 
     openModalPutBook.value = true;
     modalOpened.value = true;
@@ -287,9 +293,8 @@ async function addNewBook(): Promise<void> {
     );
 
     fetchLivros();
-    loadModal.value = false;
+    loadingButton.value = false;
   } catch (err) {
-    loadModal.value = false;
     modalOpened.value = false;
     console.log(err);
   }
