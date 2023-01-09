@@ -92,13 +92,13 @@
 import { ref, onMounted, type Ref } from "vue";
 import { useRoute } from "vue-router";
 
-import LivrosApi, { type Livros } from "@/api/livros";
+import BooksApi, { type Books } from "@/api/books";
 
 const route = useRoute();
 const getParamsId: string = route.params.id as string;
-const livrosApi: LivrosApi = new LivrosApi();
+const booksApi: BooksApi = new BooksApi();
 
-const getLivro: Ref<Livros[]> = ref([]);
+const getBook: Ref<Books[]> = ref([]);
 const loadingDescription: Ref<boolean> = ref(false);
 
 onMounted(() => {
@@ -109,7 +109,7 @@ async function fetchLivro(): Promise<void> {
   try {
     loadingDescription.value = true;
 
-    getLivro.value = await livrosApi.getBook(getParamsId);
+    getBook.value = await booksApi.getBook(getParamsId);
 
     loadingDescription.value = false;
   } catch (error) {

@@ -89,26 +89,26 @@
     <div>AUTORES</div>
     <div>
       <div class="row">
-        <div class="col-md-4 mb-4" v-for="autor in autores" :key="autor._id">
+        <div class="col-md-4 mb-4" v-for="author in authors" :key="author._id">
           <div class="card w-100" style="width: 18rem">
             <img
               src="https://dummyimage.com/600x400/000/fff"
               class="card-img-top"
-              alt="{{ autor.nome }}"
+              alt="{{ author.nome }}"
             />
             <div class="card-body">
-              <h5 class="card-title">Autor: {{ autor.nome }}</h5>
+              <h5 class="card-title">Autor: {{ author.nome }}</h5>
             </div>
             <ul class="list-group list-group-flush">
               <li class="list-group-item">
-                Nacionalidade: {{ autor.nacionalidade }}
+                Nacionalidade: {{ author.nacionalidade }}
               </li>
             </ul>
             <div class="card-body">
               <button
                 type="button"
                 class="btn btn-warning"
-                @click="openModalPutAuthor(autor._id)"
+                @click="openModalPutAuthor(author._id)"
               >
                 ALTERAR AUTOR
               </button>
@@ -128,15 +128,15 @@
 <script setup lang="ts">
 import { ref, onMounted, type Ref } from "vue";
 
-import AutoresApi, { type Autor } from "@/api/autores";
+import AuthorsApi, { type Author } from "@/api/authors";
 
 import BsModal from "@/components/BsModal.vue";
 
-const autoresApi: AutoresApi = new AutoresApi();
+const authorsApi: AuthorsApi = new AuthorsApi();
 
-const autores: Ref<Autor[]> = ref([]);
-const putAutores: Ref<Autor[]> = ref([]);
-const consultAuthor: Ref<Autor[]> = ref([]);
+const authors: Ref<Author[]> = ref([]);
+const putAuthors: Ref<Author[]> = ref([]);
+const consultAuthor: Ref<Author[]> = ref([]);
 
 const getIdAuthor: Ref<string> = ref("");
 
@@ -155,10 +155,10 @@ const rules = {
   nacionalidade: nacionalidade,
 };
 
-async function fetchAutores(): Promise<void> {
+async function fetchAuthors(): Promise<void> {
   try {
     loading.value = true;
-    autores.value = await autoresApi.get();
+    authors.value = await authorsApi.get();
     loading.value = false;
   } catch (error) {
     loading.value = false;
@@ -167,7 +167,7 @@ async function fetchAutores(): Promise<void> {
 }
 
 onMounted(() => {
-  fetchAutores();
+  fetchAuthors();
 });
 
 async function openModalPutAuthor(id: string): Promise<void> {
@@ -176,7 +176,7 @@ async function openModalPutAuthor(id: string): Promise<void> {
   modalOpened.value = true;
   getIdAuthor.value = id;
 
-  const consultAuthor: Autor[] = await autoresApi.getAuthor(getIdAuthor.value);
+  const consultAuthor: Author[] = await authorsApi.getAuthor(getIdAuthor.value);
 
   nome.value = consultAuthor.nome;
   nacionalidade.value = consultAuthor.nacionalidade;
@@ -190,14 +190,14 @@ async function openModalPostAuthor(): Promise<void> {
   nome.value = "";
   nacionalidade.value = "";
 
-  autores.value = await autoresApi.get();
+  authors.value = await authorsApi.get();
 }
 
 async function updateAuthor(): Promise<void> {
   try {
     loadingButton.value = true;
 
-    putAutores.value = await autoresApi.putAuthor(
+    putAuthors.value = await authorsApi.putAuthor(
       getIdAuthor.value,
       rules.nome.value,
       rules.nacionalidade.value
@@ -206,7 +206,7 @@ async function updateAuthor(): Promise<void> {
     loadingButton.value = false;
     modalOpened.value = false;
 
-    fetchAutores();
+    fetchAuthors();
   } catch (err) {
     modalOpened.value = false;
     modalPutAuthor.value = false;
@@ -218,7 +218,7 @@ async function addNewAuthor(): Promise<void> {
     modalOpened.value = true;
     loadingButton.value = true;
 
-    consultAuthor.value = await autoresApi.postAuthor(
+    consultAuthor.value = await authorsApi.postAuthor(
       rules.nome.value,
       rules.nacionalidade.value
     );
@@ -226,7 +226,7 @@ async function addNewAuthor(): Promise<void> {
     loadingButton.value = false;
     modalOpened.value = false;
 
-    fetchAutores();
+    fetchAuthors();
   } catch (err) {
     modalOpened.value = false;
     console.log(err);
